@@ -18,8 +18,23 @@ overlay). Typical gates:
 - **Doc audit** — if the project has a docs auditor, 0 invalid `file:line` references.
 - **Doc hygiene** — if the project has a hygiene tool, no size/format/ref alerts on touched `.md`.
 - If the change has an associated benchmark, run it and compare against the baseline.
-Generator != auditor: one role writes the code; the verification is a SEPARATE step (ideally a
-different subagent) that tries to REFUTE, not confirm.
+
+**Generator != auditor, in a SEPARATE context.** One role writes the code; the verification is a
+distinct step run in a *fresh* context — ideally a different subagent that did NOT see the generation
+reasoning — and it tries to REFUTE, not confirm. Why separate context: a model asked to review its own
+work in the same conversation rationalizes its choices ("the student grading their own exam"); isolating
+the auditor from the generator's context is what makes the refutation real, not theatre. This is a
+well-supported primitive (Chain-of-Verification, Dhuliawala et al. 2023, arXiv:2309.11495); it is a
+pattern several agent systems converge on — anchor that observation to the project's competitive
+analysis before asserting it as fact.
+
+**Cold-read.** The auditor evaluates the artifact *fresh*, without the history of previous review
+rounds. Carrying round history anchors the reviewer ("we already agreed this was fine"); a cold read
+catches what accumulated context hides. Score each round independently, then combine.
+
+**Claim -> evidence.** Every claim the auditor or generator makes must be anchored to `file:line` or a
+reproducible command output — never opinion. The full anchoring discipline lives in `anti-hallucination.md`
+(primitive 1); apply it here.
 
 ## (b) Meta-learning (what did we learn, is it reusable?)
 When closing a block, ask: "what did I learn that wasn't obvious?". If it is reusable, write it to the
@@ -36,8 +51,11 @@ The reflector and the backlog **feed each other**: the reflector triages backlog
 results (what worked, what didn't) feed the reflector.
 
 ## (d) TWO stopping criteria (distinct, do not conflate)
-1. **CONVERGENCE ("good enough"):** tests green + 0 NEW high-severity findings in a round + stable
-   benchmark. This is the normal success: stop and close.
+1. **CONVERGENCE ("good enough") — loop until DRY:** tests green + stable benchmark + **two
+   consecutive rounds** each finding 0 NEW high-severity issues. One clean round is not enough: the
+   first clean round often just means the previous round's fixes haven't been adversarially re-checked
+   yet. Require a *second* clean round (ideally cold-read by a separate auditor) so a fix that silently
+   introduced a new issue still gets caught before you close. This is the normal success: stop and close.
 2. **NON-CONVERGENCE ("can't right now"):** a goal is not reachable. Before giving up (anti-premature
    abandonment: agents tend to give up too early), exhaust:
    - a **budget cap** (tokens/iterations) large but bounded,

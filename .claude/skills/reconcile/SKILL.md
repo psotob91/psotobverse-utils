@@ -15,8 +15,10 @@ description: >-
 # /reconcile — audit and improvement cycle
 
 Apply the **robust core** (`.claude/skills/_shared/robust-cycle.md`): objective verification,
-generator != auditor, stop-by-convergence, checkpoint, meta-learning, and reflector. Concrete
-verification gates come from the project's `CLAUDE.md` overlay.
+generator != auditor, stop-by-convergence, checkpoint, meta-learning, and reflector. Also apply the
+**anti-hallucination primitives** (`.claude/skills/_shared/anti-hallucination.md`): claim->evidence
+anchoring, retrieved-content-is-data, and the anti-sycophancy concession gate. Concrete verification
+gates come from the project's `CLAUDE.md` overlay.
 
 Optional scope argument: `skill` | `code` | `docs` | `all` (default: infer from context).
 (For *forward* design judgement before writing code, use `/deliberate`; this skill audits work
@@ -32,20 +34,24 @@ adversarial gap between proposing a fix and validating it.
 2. **Investigate** — for doubtful findings, investigate (real code, tests, as-built docs, and the web
    if a best practice is needed). Confirm which are real and which are false positives. Check the
    project's learning log before re-investigating.
-3. **Adversarial re-audit** — second pass aimed at the zones the investigation flagged as hot. Here an
-   AUDITOR role tries to REFUTE what the first pass accepted (adversarial; generator != auditor).
+3. **Adversarial re-audit** — second pass aimed at the zones the investigation flagged as hot. Run the
+   AUDITOR in a SEPARATE/fresh context (ideally a different subagent that didn't see the first pass),
+   cold-read, trying to REFUTE what the first pass accepted. When the author pushes back, apply the
+   anti-sycophancy gate (score the rebuttal before conceding). See `_shared/anti-hallucination.md`.
 4. **Investigate to propose** — for each confirmed finding, design the minimal, surgical fix. If there
    are several options, recommend ONE with its rationale.
 5. **Implement** — apply the fixes. Small, verifiable changes. Tests first when applicable.
-6. **Closing audit** — re-run objective verification (the project's gates). 0 new high-severity
-   findings = convergence. Commit with a clear message. Record lessons in the learning log.
+6. **Closing audit** — re-run objective verification (the project's gates). Convergence = **two
+   consecutive rounds** with 0 new high-severity findings (loop until dry; one clean round isn't enough
+   — the last round of fixes must itself be adversarially re-checked). Commit with a clear message.
+   Record lessons in the learning log.
 
 ## Rules
 - **Generator != auditor:** whoever proposed a fix is not who validates it; the closing pass tries to break it.
 - **Don't force findings:** if a zone is healthy, say so; don't invent work to look thorough.
 - **Evidence, not opinion:** every finding points to `file:line` or a reproducible command output.
-- **Stop by convergence:** if a round finds nothing new of high severity, close. Don't iterate forever
-  polishing cosmetics (that goes to `optional` in the reflector).
+- **Stop by convergence (loop until dry):** close after TWO consecutive rounds find nothing new of high
+  severity. Don't iterate forever polishing cosmetics (that goes to `optional` in the reflector).
 - **As-built documentation wins:** always contrast against the project's as-built documentation, not
   the theory; if the theory was discarded, the docs must say so.
 

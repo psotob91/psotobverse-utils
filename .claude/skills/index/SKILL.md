@@ -16,7 +16,9 @@ description: >-
 Apply the **robust core** (`.claude/skills/_shared/robust-cycle.md`). This skill is the part that
 **CORRECTS** what the hygiene hook only **detects** (cheap continuous detection vs batched correction:
 do NOT reorganize on every change, do it periodically or when closing a milestone). Concrete tools
-(hygiene tool, outputs-index generator) come from the project's `CLAUDE.md` overlay.
+(hygiene tool, outputs-index generator) come from the project's `CLAUDE.md` overlay. Deciding a file is
+obsolete/regenerable is a factual claim — anchor it to what you observed before archiving or deleting
+(`.claude/skills/_shared/anti-hallucination.md`).
 
 ## What it does
 1. **Audit the state** — walk the repo: loose/undocumented files, duplicates (e.g. `.md` vs

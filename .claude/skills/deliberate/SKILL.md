@@ -27,7 +27,8 @@ trivial, ignore this skill.
 4. **Declarative objectives with verification.** Turn the instruction into an objective with an
    objective test of "done": "the importer parses a malformed file without crashing and returns a
    valid record", not "fix the parser". Define how you'll know it worked BEFORE starting, and verify
-   it at the end (ties into the robust core `.claude/skills/_shared/robust-cycle.md`).
+   it at the end (ties into the robust core `.claude/skills/_shared/robust-cycle.md`). Anchor the
+   evidence for "done" to a reproducible check, not a claim (`_shared/anti-hallucination.md`).
 
 ## How to apply it
 - It's not a ceremonial checklist: use the principle the task needs. A weird bug calls for (1) and (4);
