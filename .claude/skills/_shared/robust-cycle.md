@@ -42,7 +42,7 @@ results (what worked, what didn't) feed the reflector.
    abandonment: agents tend to give up too early), exhaust:
    - a **budget cap** (tokens/iterations) large but bounded,
    - several distinct **re-approaches** (not the same attempt repeated),
-   - a **diagnosis that CONFIRMS** the real blocker (needs an external resource: CUDA, credential, network, OA unavailable).
+   - a **diagnosis that CONFIRMS** the real blocker (needs an external resource: GPU/driver, credential, network, a paywalled resource).
    Only then mark the goal **BLOCKED**, record the trigger condition, and **continue with the other
    goals** (multi-goal: don't get stuck on one). Block the WHOLE run only when everything reachable is
    done and the blocked part is confirmed -> **escalate to the user** (graceful degradation).

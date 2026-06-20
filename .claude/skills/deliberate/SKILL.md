@@ -25,9 +25,9 @@ trivial, ignore this skill.
 3. **Surgical changes.** Touch the minimum necessary. One change = one intent. Don't mix refactor with
    feature with formatting in the same commit. The smaller the diff, the easier to review and revert.
 4. **Declarative objectives with verification.** Turn the instruction into an objective with an
-   objective test of "done": "the pipeline processes a scan without crashing and emits a valid
-   `.table.json`", not "fix step3". Define how you'll know it worked BEFORE starting, and verify it at
-   the end (ties into the robust core `.claude/skills/_shared/robust-cycle.md`).
+   objective test of "done": "the importer parses a malformed file without crashing and returns a
+   valid record", not "fix the parser". Define how you'll know it worked BEFORE starting, and verify
+   it at the end (ties into the robust core `.claude/skills/_shared/robust-cycle.md`).
 
 ## How to apply it
 - It's not a ceremonial checklist: use the principle the task needs. A weird bug calls for (1) and (4);
@@ -37,4 +37,6 @@ trivial, ignore this skill.
 
 ## When NOT to use it
 One-line changes, mechanical edits, renames, typo fixes, single-obvious-step tasks. Forcing
-deliberation there only wastes time and tokens.
+deliberation there only wastes time and tokens. This skill is about the engineering judgement for
+*how* to make a hard change; to track *progress toward* a multi-step objective use `/goal`, and for
+an after-the-fact audit of work already done use `/reconcile`.

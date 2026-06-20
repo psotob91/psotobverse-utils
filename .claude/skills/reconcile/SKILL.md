@@ -7,7 +7,9 @@ description: >-
   redundancies?", or when closing a module/phase and you want a quality pass before committing. Fires
   even if they just say "review this thoroughly" or "is everything coherent?". Runs 6 phases (quick
   audit -> investigate -> adversarial re-audit -> investigate to propose -> implement -> closing audit)
-  with generator != auditor, and leaves the repo verified and committed.
+  with generator != auditor, and leaves the repo verified and committed. This is about *content*
+  coherence (contradictions, docs-vs-code drift, correctness); for *file-level* tidiness (duplicates,
+  loose files, indices) use `/index` instead.
 ---
 
 # /reconcile — audit and improvement cycle
@@ -17,8 +19,13 @@ generator != auditor, stop-by-convergence, checkpoint, meta-learning, and reflec
 verification gates come from the project's `CLAUDE.md` overlay.
 
 Optional scope argument: `skill` | `code` | `docs` | `all` (default: infer from context).
+(For *forward* design judgement before writing code, use `/deliberate`; this skill audits work
+already done.)
 
-## The 6 phases (don't skip; each feeds the next)
+## The 6 phases (scale them to the surface area)
+The phases are a sequence, not a ceremony: each feeds the next, but for a small audit phases 2–4 can
+collapse into a single pass. For a large or high-risk surface, keep them separate — the value is the
+adversarial gap between proposing a fix and validating it.
 1. **Quick audit** — broad, cheap scan: list findings (contradictions, redundancies, docs stale vs
    as-built, broken refs, invariants at risk). Use the project's audit/hygiene tools if any. Classify
    by severity. Do NOT fix yet.

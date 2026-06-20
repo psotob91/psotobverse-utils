@@ -6,7 +6,8 @@ description: >-
   the objective", "work until this is finished") or when a task has several steps worth tracking and
   verifying to completion. Fires even if they just say "finish this" or "push until it's done". Keeps a
   backlog in a file (tactical state), executes verifying each step, and stops when the goal is reached
-  or confirmed blocked. Does NOT reimplement Claude's loop engine.
+  or confirmed blocked. Does NOT reimplement Claude's loop engine. This tracks *progress toward* the
+  objective; for the engineering judgement on *how* to do a hard step, use `/deliberate`.
 ---
 
 # /goal — execution toward an objective

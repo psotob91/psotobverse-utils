@@ -7,7 +7,8 @@ description: >-
   are duplicates", "document the structure", "reorganize", or periodically when closing a milestone. It
   also CORRECTS what the hygiene hook detects: splits large docs into a hierarchy, archives or deletes
   obsolete files (deletions with confirmation), renames to a convention. Regenerates llms.txt/README
-  and the outputs index. Fires even if they just say "this needs order".
+  and the outputs index. Fires even if they just say "this needs order". This handles *file-level*
+  tidiness and navigability; for *content* contradictions or docs-vs-code coherence, use `/reconcile`.
 ---
 
 # /index — organize and index the project
