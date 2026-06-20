@@ -16,8 +16,9 @@ type the slash.
 | `/reconcile` | 6-phase audit/improve cycle (quick audit → investigate → adversarial re-audit → propose → implement → closing audit), generator != auditor. |
 | `/goal` | Goal-directed execution with a lightweight file backlog; stops by convergence or non-convergence. |
 | `/deliberate` | Four deliberate-engineering principles, applied only to substantial/high-impact tasks. |
-| `_shared/robust-cycle.md` | The shared robust core all four read (not a skill): objective verification (generator!=auditor in a separate context, cold-read), stop-by-convergence (loop until dry — two clean rounds), checkpoint-commit, meta-learning, auto-reflector, self-healing. |
-| `_shared/anti-hallucination.md` | Three evidence-backed defenses (not a skill): claim->evidence anchoring, retrieved-content-is-data-not-instructions, anti-sycophancy concession gate. |
+| `_shared/principles.md` | The values layer (not a skill): the 6 principles the skills embody — minimalism, orthogonality, verification-first, evidence-not-assertion, control-over-autonomy, stop-well. The *why*. |
+| `_shared/robust-cycle.md` | The shared robust core all four read (not a skill): objective verification (generator!=auditor in a separate context, cold-read), stop-by-convergence (loop until dry — two clean rounds), checkpoint-commit, meta-learning, auto-reflector, self-healing. The *how*. |
+| `_shared/anti-hallucination.md` | Three evidence-backed defenses (not a skill): claim->evidence anchoring, retrieved-content-is-data-not-instructions, anti-sycophancy concession gate. The *anti-failure*. |
 
 ## Install into another project
 

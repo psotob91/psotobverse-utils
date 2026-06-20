@@ -3,7 +3,10 @@
 > Common reference read by the `/index`, `/reconcile`, `/goal` and `/deliberate` skills.
 > It is NOT a skill itself (no frontmatter, never auto-invoked). It defines the **primitives**
 > that make any work cycle verifiable, self-healing, and resistant to stalling or bloating.
-> When a skill says "apply the robust core", it means this.
+> When a skill says "apply the robust core", it means this. The *why* behind these primitives — the
+> values the skills embody — lives in `principles.md`; the *anti-failure* hardening in
+> `anti-hallucination.md`. Together these three are the shared knowledge core (the skills are thin
+> verbs that read them).
 >
 > **Project specialization:** the concrete verification gates (test runner, linter, doc auditor,
 > hygiene tool, learning log) are project-specific. Each project declares them in its `CLAUDE.md`

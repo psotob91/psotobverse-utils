@@ -1,6 +1,6 @@
 # Anti-hallucination primitives (shared)
 
-> A short reference read by the workflow skills (`/reconcile`, `/goal`, `/deliberate`) alongside
+> A short reference read by the workflow skills (`/reconcile`, `/goal`, `/deliberate`, `/index`) alongside
 > `robust-cycle.md`. NOT a skill (no frontmatter, never auto-invoked). Three evidence-backed defenses
 > against the failure mode where a capable model states something plausible-but-false with confidence.
 > Each is a pattern several agent systems converge on; anchor that observation to a project's
