@@ -21,9 +21,21 @@ type the slash.
 ## Install into another project
 
 ```bash
-python install.py /path/to/your/project          # copies the 5 skills into <project>/.claude/skills/
-python install.py /path/to/your/project --force   # overwrite existing copies
+python install.py /path/to/your/project              # copies the 5 skills into <project>/.claude/skills/
+python install.py /path/to/your/project --force      # overwrite existing copies
+python install.py /path/to/your/project --with-hooks  # also copy hooks/ (see below)
 ```
+
+## Optional hooks
+
+`hooks/` ships two generic, stdlib, non-blocking hooks harvested from the source project:
+- `doc_hygiene.py` — PostToolUse on `.md`: detects oversize/format/broken-ref issues (the `/index` or
+  `/reconcile` skill corrects them).
+- `stop_reminder.py` — Stop: nudges checkpoint + meta-learning when the tree has uncommitted changes.
+
+Install with `--with-hooks`, then merge `hooks/settings.snippet.json` into your `.claude/settings.json`.
+`hooks/POLICIES.md` also documents a generic **anti-drift** pattern (compare run metrics vs a baseline)
+and records what was harvested into this repo vs left in the domain project.
 
 ## The specialization contract (overlay)
 

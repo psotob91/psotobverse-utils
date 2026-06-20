@@ -1,0 +1,26 @@
+{
+  "$comment": "Generic meta-system hooks. Merge this into your project's .claude/settings.json. doc_hygiene runs on every .md edit (detects size/format/broken-ref issues; the /index or /reconcile skill corrects). stop_reminder nudges checkpoint+meta-learning when there are uncommitted changes. Both are stdlib: they run with 'python' without a venv. Adjust the paths if you place the hooks elsewhere.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python hooks/doc_hygiene.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python hooks/stop_reminder.py"
+          }
+        ]
+      }
+    ]
+  }
+}
