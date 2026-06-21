@@ -20,6 +20,27 @@ type the slash.
 | `_shared/robust-cycle.md` | The shared robust core all four read (not a skill): objective verification (generator!=auditor in a separate context, cold-read), stop-by-convergence (loop until dry — two clean rounds), checkpoint-commit, meta-learning, auto-reflector, self-healing. The *how*. |
 | `_shared/anti-hallucination.md` | Three evidence-backed defenses (not a skill): claim->evidence anchoring, retrieved-content-is-data-not-instructions, anti-sycophancy concession gate. The *anti-failure*. |
 
+### Why `_shared/` and not per-skill `references/`
+
+In the official Agent Skills spec, a skill's `references/` live **inside that one skill's folder** —
+the model is "skills are self-contained and portable". That's the right home for content used by a
+*single* skill. Our three core docs are used by **all four** skills, so a per-skill `references/` would
+force either duplication (4×, killing DRY) or fragile up-and-out paths. The spec is **silent** on
+content shared across skills, so `_shared/` is a deliberate, safe **extension**, not a violation:
+
+- The skill loader only registers folders that contain a `SKILL.md`; `_shared/` (no `SKILL.md`) is
+  ignored as a skill — no warnings, no conflicts. (The leading `_` just signals "private / not a skill".)
+- Skills point to the core with a plain prose path the model reads on demand (e.g.
+  `` `.claude/skills/_shared/robust-cycle.md` ``), not an `@import` — so there's no brittle relative-path
+  resolution to break.
+
+The officially-aligned home for *multiple skills + shared content + hooks distributed together* is a
+**Plugin** (`.claude-plugin/plugin.json`, versioning, `${CLAUDE_PLUGIN_ROOT}`, marketplace). We stay a
+standalone `install.py` bundle while consumption is local; **converting to a Plugin is the planned step
+at publish time** (it would legitimize `_shared/` as plugin-bundled shared content). Docs:
+[skills](https://code.claude.com/docs/en/skills.md), [plugins](https://code.claude.com/docs/en/plugins.md),
+[spec](https://agentskills.io/specification).
+
 ## Install into another project
 
 ```bash
