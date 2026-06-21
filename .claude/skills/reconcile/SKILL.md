@@ -34,10 +34,12 @@ adversarial gap between proposing a fix and validating it.
 2. **Investigate** — for doubtful findings, investigate (real code, tests, as-built docs, and the web
    if a best practice is needed). Confirm which are real and which are false positives. Check the
    project's learning log before re-investigating.
-3. **Adversarial re-audit** — second pass aimed at the zones the investigation flagged as hot. Run the
-   AUDITOR in a SEPARATE/fresh context (ideally a different subagent that didn't see the first pass),
-   cold-read, trying to REFUTE what the first pass accepted. When the author pushes back, apply the
-   anti-sycophancy gate (score the rebuttal before conceding). See `_shared/anti-hallucination.md`.
+3. **Adversarial re-audit** — second pass aimed at the zones the investigation flagged as hot. **By
+   default, spawn a separate subagent** as the AUDITOR (a fresh context that did NOT see the first
+   pass or the generation reasoning), cold-read, trying to REFUTE what the first pass accepted —
+   running it in the same context is the fallback only for a trivial surface. When the author pushes
+   back, apply the anti-sycophancy gate (score the rebuttal before conceding). See
+   `_shared/anti-hallucination.md`.
 4. **Investigate to propose** — for each confirmed finding, design the minimal, surgical fix. If there
    are several options, recommend ONE with its rationale.
 5. **Implement** — apply the fixes. Small, verifiable changes. Tests first when applicable.
