@@ -49,8 +49,8 @@ plugin (`skills/<verb>/` → `../_shared/`) or vendored into a project's `.claud
 
 ```bash
 # Claude Code (one-time, machine-global):
-/plugin marketplace add https://github.com/psotob91/psotobverse-utils
-/plugin install psotobverse-utils
+/plugin marketplace add psotob91/psotobverse-utils
+/plugin install psotobverse-utils@psotobverse-utils
 ```
 
 In **Cowork** there is no setup CLI: install via the GUI (Customize → Plugins → Browse/Install).
