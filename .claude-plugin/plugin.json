@@ -8,6 +8,12 @@
   },
   "homepage": "https://github.com/psotob91/psotobverse-utils",
   "license": "MIT",
-  "keywords": ["workflow", "governance", "anti-hallucination", "claude-code", "cowork", "skills"],
-  "hooks": "./hooks/hooks.json"
+  "keywords": [
+    "workflow",
+    "governance",
+    "anti-hallucination",
+    "claude-code",
+    "cowork",
+    "skills"
+  ]
 }

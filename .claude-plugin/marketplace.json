@@ -4,6 +4,7 @@
     "name": "Percy Soto-Becerra",
     "url": "https://github.com/psotob91"
   },
+  "description": "Claude-only workflow plugin: thin-verb skills, shared robust core, governance hooks and generator/auditor subagents.",
   "plugins": [
     {
       "name": "psotobverse-utils",
