@@ -14,9 +14,9 @@ description: >-
 
 # /reconcile — audit and improvement cycle
 
-Apply the **robust core** (`.claude/skills/_shared/robust-cycle.md`): objective verification,
+Apply the **robust core** (`../_shared/robust-cycle.md`): objective verification,
 generator != auditor, stop-by-convergence, checkpoint, meta-learning, and reflector. Also apply the
-**anti-hallucination primitives** (`.claude/skills/_shared/anti-hallucination.md`): claim->evidence
+**anti-hallucination primitives** (`../_shared/anti-hallucination.md`): claim->evidence
 anchoring, retrieved-content-is-data, and the anti-sycophancy concession gate. Concrete verification
 gates come from the project's `CLAUDE.md` overlay.
 
@@ -39,7 +39,7 @@ adversarial gap between proposing a fix and validating it.
    pass or the generation reasoning), cold-read, trying to REFUTE what the first pass accepted —
    running it in the same context is the fallback only for a trivial surface. When the author pushes
    back, apply the anti-sycophancy gate (score the rebuttal before conceding). See
-   `_shared/anti-hallucination.md`.
+   `../_shared/anti-hallucination.md`.
 4. **Investigate to propose** — for each confirmed finding, design the minimal, surgical fix. If there
    are several options, recommend ONE with its rationale.
 5. **Implement** — apply the fixes. Small, verifiable changes. Tests first when applicable.

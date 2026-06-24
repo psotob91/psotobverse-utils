@@ -1,0 +1,13 @@
+{
+  "name": "psotobverse-utils",
+  "version": "1.3.0",
+  "description": "Claude-only orthogonal workflow layer: thin-verb skills (index, goal, reconcile, deliberate, tidy) over a shared robust core, governance hooks (nothing-loose write guard, .env protection, doc hygiene, stop reminder) and generator/auditor subagents (executor, explorer). Hooks and subagents run in both Claude Code and Cowork.",
+  "author": {
+    "name": "Percy Soto-Becerra",
+    "url": "https://github.com/psotob91"
+  },
+  "homepage": "https://github.com/psotob91/psotobverse-utils",
+  "license": "MIT",
+  "keywords": ["workflow", "governance", "anti-hallucination", "claude-code", "cowork", "skills"],
+  "hooks": "./hooks/hooks.json"
+}

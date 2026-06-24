@@ -13,7 +13,7 @@ description: >-
 
 A thin verb: before a substantial/risky change, **stop and design the approach** instead of coding into
 the unknown. It doesn't carry its own theory — it *applies* the shared principles
-(`.claude/skills/_shared/principles.md`) to this specific task. Claude already embodies part of this;
+(`../_shared/principles.md`) to this specific task. Claude already embodies part of this;
 the value here is to **reinforce it on high-impact work**, not recite it on everything.
 
 ## What to do

@@ -1,0 +1,14 @@
+{
+  "name": "psotobverse-utils",
+  "owner": {
+    "name": "Percy Soto-Becerra",
+    "url": "https://github.com/psotob91"
+  },
+  "plugins": [
+    {
+      "name": "psotobverse-utils",
+      "source": "./",
+      "description": "Claude-only orthogonal workflow layer (skills, governance hooks, subagents). Runs in Claude Code and Cowork."
+    }
+  ]
+}

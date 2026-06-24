@@ -24,7 +24,7 @@ def main() -> int:
         print(
             "[reminder] There are uncommitted changes. Before closing the block: "
             "checkpoint (commit/tag), meta-learn (your learning log) and reflect (your reflector). "
-            "See .claude/skills/_shared/robust-cycle.md (b, c, f)."
+            "See the robust core (robust-cycle, sections b, c, f) bundled with the workflow plugin."
         )
     return 0
 

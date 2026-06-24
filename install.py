@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Install the psotobverse-utils workflow skills into another project.
+"""Install the psotobverse-utils workflow skills into another project (legacy vendor path).
+
+NOTE: the PRIMARY install is now the Claude Code PLUGIN (this repo ships
+.claude-plugin/plugin.json + hooks/hooks.json). Installing as a plugin also runs the hooks and
+subagents in Cowork (settings.json hooks do not). Use this script only for a Code-only vendor copy
+when you do not want to install the plugin.
 
 Usage:
     python install.py <target-project-dir> [--force] [--with-hooks] [--no-overlay]
     python install.py <target-project-dir> --check        # verify parity, no writes
 
-Copies the generic workflow skills (_shared, goal, deliberate, reconcile, index) into
+Copies the generic workflow skills (_shared, goal, deliberate, reconcile, index, tidy) into
 <target-project-dir>/.claude/skills/ so Claude Code can auto-invoke them there. By design the skills
 are project-agnostic: the consuming project supplies the concrete verification gates (test runner,
 linter, doc auditor, hygiene tool, learning log) via a "Skill specialization" overlay section in its
@@ -24,7 +29,7 @@ import shutil
 import sys
 from pathlib import Path
 
-SKILLS = ["_shared", "goal", "deliberate", "reconcile", "index"]
+SKILLS = ["_shared", "goal", "deliberate", "reconcile", "index", "tidy"]
 
 OVERLAY_MARKERS = ("skill specialization", "especializacion de skills")
 
@@ -118,7 +123,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    src_root = Path(__file__).resolve().parent / ".claude" / "skills"
+    src_root = Path(__file__).resolve().parent / "skills"
     if not src_root.is_dir():
         print(f"ERROR: source skills not found at {src_root}", file=sys.stderr)
         return 2
