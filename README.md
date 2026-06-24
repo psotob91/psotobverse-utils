@@ -31,7 +31,7 @@ These are **workflow** components (about the *how*), deliberately separate from 
 | hook `stop_reminder.py` (Stop) | Nudges checkpoint + meta-learning only when the git tree is dirty. Never blocks. |
 | subagent `executor` | Mechanical execution (git/build/run); the *generator* role. |
 | subagent `explorer` | Read-only search/mapping; the cold-read *auditor* role for `/reconcile`. |
-| command `/tidy`, `/sync-cowork` | Explicit triggers; `/sync-cowork` generates a project's `COWORK_INSTRUCTIONS.md`. |
+| command `/tidy`, `/psotobverse-utils:sync-cowork` | Explicit triggers; `/psotobverse-utils:sync-cowork` generates a project's `COWORK_INSTRUCTIONS.md`. |
 
 ### Why `skills/_shared/` (shared content across skills)
 
