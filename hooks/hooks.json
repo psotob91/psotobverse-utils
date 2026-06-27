@@ -1,5 +1,5 @@
 {
-  "$comment": "Plugin hook registration. EMPIRICAL (datavidence ADR-0002 spike, 2026-06-27): plugin PreToolUse hooks DO fire in Cowork, but Cowork does NOT shell-expand ${CLAUDE_PLUGIN_ROOT} — the literal string reached python, the script wasn't found, python exited 2, and Cowork treated exit-2 as a hard block (fail-CLOSED, violating the fail-open mandate). Fix: do not rely on the SHELL expanding ${...}; instead read CLAUDE_PLUGIN_ROOT BY NAME from os.environ inside a `python -c` bootstrapper, then runpy the real hook. If the env var is absent or the script is missing, exit 0 (FAIL-OPEN). This keeps full enforcement in terminal Claude Code, enables it in Cowork iff CLAUDE_PLUGIN_ROOT is present as an env var, and otherwise degrades safely. No ${...} and no inner double quotes -> portable across bash/cmd/PowerShell. All hooks are Python-stdlib (no venv).",
+  "$comment": "Plugin hook registration. EMPIRICAL (datavidence ADR-0002 spike, 2026-06-27): plugin PreToolUse hooks DO fire in Cowork, but Cowork does NOT shell-expand ${CLAUDE_PLUGIN_ROOT} — the literal string reached python, the script wasn't found, python exited 2, and Cowork treated exit-2 as a hard block (fail-CLOSED, violating the fail-open mandate). Fix: do not rely on the SHELL expanding ${...}; instead read CLAUDE_PLUGIN_ROOT BY NAME from os.environ inside a `python -c` bootstrapper, then runpy the real hook. If the env var is absent or the script is missing, exit 0 (FAIL-OPEN). This keeps full enforcement in terminal Claude Code, enables it in Cowork iff CLAUDE_PLUGIN_ROOT is present as an env var, and otherwise degrades safely. No ${...} and no inner double quotes -> portable across bash/cmd/PowerShell. All hooks are Python-stdlib (no venv). The SessionStart/UserPromptSubmit/SessionEnd hooks are the OPT-IN meta-learner: they fire in every session but no-op unless the project ships .claude/meta-learner.json (so they never litter unrelated repos). That config also carries the project's domain signal patterns and the consensus-radar filename.",
   "hooks": {
     "PreToolUse": [
       {
@@ -27,6 +27,27 @@
       {
         "hooks": [
           { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','stop_reminder.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','session_start.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','capture_signal.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','session_end.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
         ]
       }
     ]
