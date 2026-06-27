@@ -12,6 +12,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import meta_util as u  # noqa: E402
+import env_probe  # noqa: E402
 
 
 def main() -> int:
@@ -27,6 +28,11 @@ def main() -> int:
     crashed = prev.get("status") == "active"
 
     parts = [f"[meta-learner] {u.project_label(cfg)} · branch {u.branch()}"]
+
+    env = env_probe.ensure(cfg)  # probe machine once, then reuse the cache
+    if env:
+        parts.append(env)
+
     if crashed:
         parts.append(
             "WARNING: the previous session did not close cleanly (possible crash "

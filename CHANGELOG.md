@@ -3,6 +3,22 @@
 All notable changes to **psotobverse-utils** are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.5.0] - 2026-06-28
+
+### Added
+- **Once-per-machine environment probe** folded into the meta-learner's
+  `SessionStart` hook (`hooks/env_probe.py`). On the first session on a machine it
+  detects the shell(s) (incl. PowerShell edition/version), available CLIs (git, gh,
+  python, uv, copier, node, Rscript, make, jq, rg, docker, quarto, …) and OS
+  quirks, then caches the result machine-globally at `~/.claude/environment.json`
+  (+ a human-readable `environment.md`). Every later session injects a concise
+  summary read from the cache — the agent learns what the machine has (and what to
+  avoid, e.g. PowerShell 5.1 `&&`) without re-probing. Missing tools come with
+  install hints. Refresh by deleting the cache. Projects extend the probed CLI list
+  via a `probe_tools` array in `.claude/meta-learner.json`. Stdlib, fail-open,
+  ASCII-safe output. (Aligns with Anthropic's SessionStart guidance: fast, concise,
+  dynamic live context over static files.)
+
 ## [1.4.0] - 2026-06-28
 
 ### Added
