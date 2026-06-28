@@ -19,11 +19,13 @@ import meta_util as u  # noqa: E402
 CATALOG = (".claude", "policies", "00-index.md")
 MARKER = (".claude", "state", "coverage_sentinel.json")
 
-# A prompt looks "substantive" if it is long enough or names analysis/build work.
+# A prompt looks "substantive" if it is long enough or names design/build/analysis work.
+# Domain-neutral on purpose (orthogonality): no project- or field-specific vocabulary —
+# the catalog opt-in already scopes the hook; this is just a coarse substantive-ness gate.
 SUBSTANTIVE = re.compile(
-    r"\b(analy[sz]e|model|estimate|regress|impute|missing|cohort|phenotype|"
-    r"incidence|prevalence|denominator|design|implement|build|refactor|"
-    r"pipeline|causal|predict|validate|audit|migrat|onboard)\w*", re.I,
+    r"\b(analy[sz]e|model|estimate|measure|design|implement|build|refactor|"
+    r"pipeline|integrat|validate|verify|audit|review|migrat|onboard|"
+    r"investigat|architect|plan)\w*", re.I,
 )
 
 
