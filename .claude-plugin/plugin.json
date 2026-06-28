@@ -1,7 +1,7 @@
 {
   "name": "psotobverse-utils",
-  "version": "1.6.0",
-  "description": "Claude-only orthogonal workflow layer: thin-verb skills (index, goal, reconcile, deliberate, tidy, reflect, audit-report) over a shared robust core, governance hooks (nothing-loose write guard, .env protection, doc hygiene, stop reminder), an opt-in meta-learner (SessionStart crash-detect + fast resume + once-per-machine environment probe, UserPromptSubmit signal capture, SessionEnd handoff; activated per-project by .claude/meta-learner.json) and generator/auditor subagents (executor, explorer). Hooks and subagents run in both Claude Code and Cowork.",
+  "version": "1.7.0",
+  "description": "Claude-only orthogonal workflow layer: thin-verb skills (index, goal, reconcile, deliberate, tidy, reflect, audit-report) and commands (comprehend, coverage, cross-examine, sync-cowork) over a shared robust core; governance hooks (nothing-loose write guard, .env protection, doc hygiene, stop reminder); additive opt-in policy routing (policy_router reminders + comprehension_gate write-gate, driven by the project's .claude/policy/routing.yml; routing is additive, never subtractive); an opt-in meta-learner (SessionStart crash-detect + fast resume + environment probe, UserPromptSubmit signal capture, SessionEnd handoff; activated by .claude/meta-learner.json) and generator/auditor subagents (executor, explorer). /coverage is a recall safety net (decorrelated lens panel, union aggregation) against missing a relevant policy; /comprehend is a restate-before-act gate; /cross-examine is an adversarial review panel. Hooks and subagents run in both Claude Code and Cowork.",
   "author": {
     "name": "Percy Soto-Becerra",
     "url": "https://github.com/psotob91"

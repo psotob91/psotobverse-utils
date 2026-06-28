@@ -1,0 +1,48 @@
+# Validate the plugin: manifests parse, hooks are valid + fail-open, skills/commands
+# carry frontmatter, and Markdown hygiene passes. Stdlib only (no venv).
+name: validate-plugin
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Manifests + hooks.json parse as JSON
+        run: |
+          python -c "import json; json.load(open('.claude-plugin/plugin.json'))"
+          python -c "import json; json.load(open('.claude-plugin/marketplace.json'))"
+          python -c "import json; json.load(open('hooks/hooks.json'))"
+
+      - name: Hook scripts compile
+        run: python -m py_compile hooks/*.py
+
+      - name: Hooks fail open on empty stdin (exit 0)
+        run: |
+          for h in hooks/*.py; do
+            case "$(basename "$h")" in
+              meta_util.py|routing_util.py) continue ;;  # shared modules, not entrypoints
+            esac
+            echo "" | python "$h" || { echo "FAIL-OPEN VIOLATION: $h exited non-zero"; exit 1; }
+          done
+
+      - name: Skills and commands carry YAML frontmatter
+        run: |
+          fail=0
+          for f in commands/*.md skills/*/SKILL.md; do
+            [ -f "$f" ] || continue
+            head -1 "$f" | grep -q '^---$' || { echo "Missing frontmatter: $f"; fail=1; }
+          done
+          exit $fail
+
+      - name: Markdown hygiene gate
+        run: python hooks/doc_hygiene.py --all

@@ -9,7 +9,7 @@
     {
       "name": "psotobverse-utils",
       "source": "./",
-      "description": "Claude-only orthogonal workflow layer (skills, governance hooks, subagents). Runs in Claude Code and Cowork."
+      "description": "Claude-only orthogonal workflow layer (skills, commands /comprehend /coverage /cross-examine, additive policy-routing hooks, governance hooks, meta-learner, subagents). /coverage is a recall safety net against missing a relevant policy. Runs in Claude Code and Cowork."
     }
   ]
 }

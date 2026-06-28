@@ -3,6 +3,40 @@
 All notable changes to **psotobverse-utils** are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.7.0] - 2026-06-28
+
+### Added
+- **`/comprehend`** — a restate-before-act comprehension gate: the agent explains, in
+  its own words, the goal, explicit + hidden assumptions, success criteria, ambiguities,
+  clarifying questions, scope/data limits, and what it will NOT assume; runs a `/coverage`
+  sweep; renders ASCII decision/timeline diagrams when the task is about rules or time
+  logic; then hard-stops without planning or executing.
+- **`/coverage`** — a recall safety net against false negatives in policy/doc selection:
+  fans out N decorrelated reviewer lenses over a project-declared catalog, aggregates by
+  **union** (recall) + **votes** (triage: Tier-1 must / Tier-2 consider), reports
+  deliberately-excluded items and off-route catches. Benchmarked in the datavidence
+  factory: union recall 1.00, 46/46 off-route positives caught (majority lowers recall).
+- **`/cross-examine`** — an adversarial multi-agent review panel: independent skeptics
+  try to refute a change/finding/plan/claim, vote (confirmed = survives a majority),
+  synthesize, and propose (never auto-fix).
+- **Routing hooks (opt-in, fail-open, additive):** `policy_router.py` (UserPromptSubmit —
+  additive next-policy reminders driven by the child's `.claude/policy/routing.yml`;
+  never blocks), `comprehension_gate.py` (PreToolUse — the one write-gate: *asks* before
+  writing a phenotype file when its required timeline/decision artifact is missing; never
+  denies, never blocks reads), `coverage_sentinel.py` (UserPromptSubmit — once-per-session
+  nudge toward `/coverage` on a substantive task). `routing_util.py` is a shared stdlib
+  parser. **Invariant 0:** routing is additive, never subtractive.
+
+### Changed
+- **Self-hardening (dogfooding):** the repo now opts into the guardrails it ships via
+  `.claude/` (constitution pointing at `skills/_shared/`, knowledge-map, self-guard
+  `policy/paths.allow.json`, `meta-learner.json`), adds hygiene
+  (`.editorconfig`/`.gitattributes`/`.gitleaks.toml`) and CI (`validate-plugin`:
+  manifests/hooks parse, py_compile, fail-open-on-empty-stdin, frontmatter, doc_hygiene).
+- `CLAUDE.md` refreshed (current hooks/commands) and documents the **safe-edit protocol**
+  (the installed/cache copy fires, not the source you edit; config is live but hook
+  *behavior* changes need `claude plugin update`; fail-open ⇒ no lock-out).
+
 ## [1.6.0] - 2026-06-28
 
 ### Fixed

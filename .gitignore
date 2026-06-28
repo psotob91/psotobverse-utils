@@ -11,3 +11,7 @@ Thumbs.db
 
 # Local Claude overrides (per-machine)
 .claude/settings.local.json
+
+# meta-learner transient (durable learning/*.md + learning/sessions/ ARE committed)
+/.claude/state/
+/learning/queue/

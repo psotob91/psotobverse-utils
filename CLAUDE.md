@@ -49,13 +49,22 @@ hooks/
   hooks.json             ← plugin hook registration (runs in Code AND Cowork)
   nothing_loose.py       ← PreToolUse: deny writes outside the per-project allowlist; FAILS OPEN
   env_protect.py         ← PreToolUse: deny access to secret files (globally safe)
+  comprehension_gate.py  ← PreToolUse: the one routing write-gate — ASK (not deny) when a phenotype
+                            file is written before its required timeline/decision artifact; opt-in via routing.yml
   doc_hygiene.py         ← PostToolUse: detect (not correct) .md size/format/broken-ref
   stop_reminder.py       ← Stop: nudge checkpoint + meta-learning when git is dirty
+  session_start.py / capture_signal.py / session_end.py  ← meta-learner (opt-in via .claude/meta-learner.json)
+  coverage_sentinel.py   ← UserPromptSubmit: nudge /coverage on a substantive task (opt-in; once/session)
+  policy_router.py       ← UserPromptSubmit: additive routing reminders (opt-in via routing.yml; never blocks)
+  meta_util.py / routing_util.py  ← shared stdlib helpers (NOT entrypoints)
 agents/
   executor.md            ← generator role (Bash, Read; haiku)
   explorer.md            ← auditor / read-only role (Read, Grep, Glob; haiku)
 commands/
   tidy.md, sync-cowork.md
+  comprehend.md          ← restate-before-act comprehension gate (+ runs /coverage)
+  coverage.md            ← recall safety net: decorrelated lens panel over a doc catalog (union aggregation)
+  cross-examine.md       ← adversarial multi-agent review panel (refute, vote, propose)
 install.py               ← legacy Code-only vendor path (copies skills into target/.claude/skills/)
 ```
 
@@ -87,8 +96,37 @@ Three load-bearing conventions, in order of importance:
 
 ## Governance hooks
 
-`hooks/hooks.json` registers four stdlib, non-blocking-by-default hooks that run in Code and Cowork.
-`nothing_loose` reads `$CLAUDE_PROJECT_DIR/.claude/policy/paths.allow.json` and **fails open** when it
-is absent (mandatory: the plugin is machine-global in Cowork and must not block unrelated projects).
-The `$CLAUDE_PROJECT_DIR`/Cowork-hook assumptions are pending an empirical spike (see the template's
-`docs/adr/0002`). `hooks/POLICIES.md` documents the generic anti-drift baseline pattern and provenance.
+`hooks/hooks.json` registers stdlib, non-blocking-by-default hooks that run in Code and Cowork. Two
+guards (`nothing_loose`, `env_protect`) + `doc_hygiene` + `stop_reminder` are always-on; the
+meta-learner trio (`session_start`/`capture_signal`/`session_end`) and the routing trio
+(`policy_router`/`comprehension_gate`/`coverage_sentinel`) are **opt-in per project** (no-op unless the
+project ships `.claude/meta-learner.json` or `.claude/policy/routing.yml`). Every hook **fails open**:
+`nothing_loose` reads `$CLAUDE_PROJECT_DIR/.claude/policy/paths.allow.json` and allows when absent
+(mandatory: the plugin is machine-global in Cowork and must not block unrelated projects). Routing is
+**additive, never subtractive** — `policy_router` only *suggests*; the only interrupt is
+`comprehension_gate`, which *asks* (never denies) and only on a write. `hooks/POLICIES.md` documents the
+generic anti-drift baseline pattern and provenance.
+
+## This repo governs itself (dogfooding)
+
+`.claude/` opts this repo into the guardrails it ships: `constitution.md` (dogfoods `skills/_shared/`),
+`knowledge-map.md`, `policy/paths.allow.json` (self-guard), and `meta-learner.json` (captures
+plugin-authoring lessons to `learning/`). CI (`.github/workflows/validate-plugin.yml`) parses the
+manifests + `hooks.json`, compiles the hooks, asserts they fail open on empty stdin, checks
+skill/command frontmatter, and runs the `doc_hygiene` gate.
+
+## Safe-edit protocol (the circularity is safe)
+
+This repo is **factory and plugin at once** — its own installed hooks govern sessions that edit it.
+That is safe dogfooding, not a dangerous loop, because:
+
+- **The INSTALLED (cache) copy fires, never the source you edit here.** The `hooks.json` bootstrap
+  resolves the install dir (`CLAUDE_PLUGIN_ROOT` → `installed_plugins.json` → cache glob) and runs that
+  copy. So editing a hook's `.py` here is **inert until `claude plugin update`** — you cannot break the
+  live session by editing a hook.
+- **Per-project config is read live.** Adding `.claude/policy/paths.allow.json` here makes the installed
+  `nothing_loose` guard this repo **immediately** (config is live; only hook *behavior* changes need an
+  update). Blindaje is instant; risk is not.
+- **Fail-open ⇒ no lock-out.** A malformed config or a thrown hook exits 0 and allows the write.
+- **To test a hook change before it goes live:** pipe a simulated event to it
+  (`echo '<json>' | python hooks/<hook>.py`) — never rely on the live hook to validate its own edit.

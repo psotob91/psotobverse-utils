@@ -1,0 +1,11 @@
+# gitleaks configuration (psotobverse-utils) — extends the default rule set.
+title = "gitleaks config (psotobverse-utils)"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Plugin-level allowlist"
+paths = [
+  '''\.env\.example$''',
+]
