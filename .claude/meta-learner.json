@@ -1,0 +1,11 @@
+{
+  "$comment": "Opt-in: presence activates the plugin's own meta-learner session hooks WHEN a session is rooted in this repo (dogfooding). Absent elsewhere => hooks no-op. Captures plugin-authoring lessons to learning/; routes durable convention signals to STANDARDS_WATCH.",
+  "enabled": true,
+  "label": "psotobverse-utils",
+  "radar": "learning/STANDARDS_WATCH.md",
+  "consensus_patterns": [
+    "plugin", "hook", "skill", "command", "marketplace", "Claude Code",
+    "Cowork", "PreToolUse", "UserPromptSubmit", "SessionStart", "permissionDecision",
+    "additionalContext", "fail.?open", "orthogonal", "subagent", "deprecat", "convention"
+  ]
+}

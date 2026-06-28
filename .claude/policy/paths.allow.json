@@ -1,0 +1,25 @@
+{
+  "$comment": "Self-guard for authoring THIS plugin repo. Read by the plugin's own installed nothing_loose PreToolUse hook via $CLAUDE_PROJECT_DIR when a session is rooted here (dogfooding — see CLAUDE.md 'Safe-edit protocol'). FAILS OPEN if absent. The installed/cache copy of the hook is what fires; editing hook source here is inert until `claude plugin update`, so this guard cannot lock you out. allow_write = globs where the agent may Write/Edit; a NEW loose file elsewhere is denied. Add a path here if the repo grows a new top-level location.",
+  "allow_write": [
+    ".claude/**",
+    ".claude-plugin/**",
+    ".github/**",
+    "skills/**",
+    "hooks/**",
+    "commands/**",
+    "agents/**",
+    "docs/**",
+    "eval/**",
+    "learning/**",
+    "CHANGELOG.md",
+    "README.md",
+    "CLAUDE.md",
+    "LICENSE",
+    "install.py",
+    ".gitignore",
+    ".gitattributes",
+    ".editorconfig",
+    ".gitleaks.toml",
+    ".pre-commit-config.yaml"
+  ]
+}
