@@ -1,17 +1,17 @@
 {
-  "$comment": "Plugin hook registration. EMPIRICAL (datavidence ADR-0002 spike, 2026-06-27): plugin PreToolUse hooks DO fire in Cowork, but Cowork does NOT shell-expand ${CLAUDE_PLUGIN_ROOT} — the literal string reached python, the script wasn't found, python exited 2, and Cowork treated exit-2 as a hard block (fail-CLOSED, violating the fail-open mandate). Fix: do not rely on the SHELL expanding ${...}; instead read CLAUDE_PLUGIN_ROOT BY NAME from os.environ inside a `python -c` bootstrapper, then runpy the real hook. If the env var is absent or the script is missing, exit 0 (FAIL-OPEN). This keeps full enforcement in terminal Claude Code, enables it in Cowork iff CLAUDE_PLUGIN_ROOT is present as an env var, and otherwise degrades safely. No ${...} and no inner double quotes -> portable across bash/cmd/PowerShell. All hooks are Python-stdlib (no venv). The SessionStart/UserPromptSubmit/SessionEnd hooks are the OPT-IN meta-learner: they fire in every session but no-op unless the project ships .claude/meta-learner.json (so they never litter unrelated repos). That config also carries the project's domain signal patterns and the consensus-radar filename.",
+  "$comment": "Plugin hook registration. SELF-DISCOVERING bootstrapper. EMPIRICAL (datavidence investigations 2026-06-27 / 2026-06-28): plugin hooks DO fire in both terminal Claude Code and the desktop app, BUT (a) the desktop app does NOT set CLAUDE_PLUGIN_ROOT and (b) Cowork does not shell-expand ${CLAUDE_PLUGIN_ROOT}. The earlier bootstrapper (read CLAUDE_PLUGIN_ROOT, else exit 0) therefore fired-but-no-op'd in the desktop app, so the meta-learner did nothing there. Fix: each command first tries CLAUDE_PLUGIN_ROOT (set in terminal CLI, short-circuits the lookup with no regression), and if absent resolves the plugin install dir AT RUNTIME from ~/.claude/plugins/installed_plugins.json (installPath), with a glob of ~/.claude/plugins/cache/*/psotobverse-utils/* (newest) as fallback, then runpy's the real hook. If nothing resolves or the script is missing, exit 0 (FAIL-OPEN). Depends only on what every install creates (installed_plugins.json + the cache), never on a source checkout. No ${...} and no inner double quotes -> portable across bash/cmd/PowerShell. All hooks are Python-stdlib (no venv). NOTE: the desktop app runs hooks (side effects work: signal capture, handoff, dirty-bit) but does NOT inject SessionStart additionalContext into the model (Anthropic feature request #47993) — for auto-resume-by-injection use the terminal, or have CLAUDE.md tell the agent to self-read SESSION_STATE.md. The SessionStart/UserPromptSubmit/SessionEnd hooks are the OPT-IN meta-learner: they fire in every session but no-op unless the project ships .claude/meta-learner.json.",
   "hooks": {
     "PreToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",
         "hooks": [
-          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','nothing_loose.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+          { "type": "command", "command": "python -c \"import os,sys,json,glob,runpy; S='nothing_loose.py'; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); j=os.path.expanduser('~/.claude/plugins/installed_plugins.json'); d=(json.load(open(j)) if (not r and os.path.exists(j)) else {}); r=r or next((sorted(v,key=lambda e:e.get('version',''))[-1].get('installPath') for k,v in d.get('plugins',{}).items() if k.startswith('psotobverse-utils')), None); g=glob.glob(os.path.expanduser('~/.claude/plugins/cache/*/psotobverse-utils/*')); r=r or (sorted(g)[-1] if g else None); p=(os.path.join(r,'hooks',S) if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
         ]
       },
       {
         "matcher": "Read|Write|Edit|MultiEdit",
         "hooks": [
-          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','env_protect.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+          { "type": "command", "command": "python -c \"import os,sys,json,glob,runpy; S='env_protect.py'; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); j=os.path.expanduser('~/.claude/plugins/installed_plugins.json'); d=(json.load(open(j)) if (not r and os.path.exists(j)) else {}); r=r or next((sorted(v,key=lambda e:e.get('version',''))[-1].get('installPath') for k,v in d.get('plugins',{}).items() if k.startswith('psotobverse-utils')), None); g=glob.glob(os.path.expanduser('~/.claude/plugins/cache/*/psotobverse-utils/*')); r=r or (sorted(g)[-1] if g else None); p=(os.path.join(r,'hooks',S) if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
         ]
       }
     ],
@@ -19,35 +19,35 @@
       {
         "matcher": "Write|Edit|MultiEdit|NotebookEdit",
         "hooks": [
-          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','doc_hygiene.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+          { "type": "command", "command": "python -c \"import os,sys,json,glob,runpy; S='doc_hygiene.py'; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); j=os.path.expanduser('~/.claude/plugins/installed_plugins.json'); d=(json.load(open(j)) if (not r and os.path.exists(j)) else {}); r=r or next((sorted(v,key=lambda e:e.get('version',''))[-1].get('installPath') for k,v in d.get('plugins',{}).items() if k.startswith('psotobverse-utils')), None); g=glob.glob(os.path.expanduser('~/.claude/plugins/cache/*/psotobverse-utils/*')); r=r or (sorted(g)[-1] if g else None); p=(os.path.join(r,'hooks',S) if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
         ]
       }
     ],
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','stop_reminder.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+          { "type": "command", "command": "python -c \"import os,sys,json,glob,runpy; S='stop_reminder.py'; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); j=os.path.expanduser('~/.claude/plugins/installed_plugins.json'); d=(json.load(open(j)) if (not r and os.path.exists(j)) else {}); r=r or next((sorted(v,key=lambda e:e.get('version',''))[-1].get('installPath') for k,v in d.get('plugins',{}).items() if k.startswith('psotobverse-utils')), None); g=glob.glob(os.path.expanduser('~/.claude/plugins/cache/*/psotobverse-utils/*')); r=r or (sorted(g)[-1] if g else None); p=(os.path.join(r,'hooks',S) if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
         ]
       }
     ],
     "SessionStart": [
       {
         "hooks": [
-          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','session_start.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+          { "type": "command", "command": "python -c \"import os,sys,json,glob,runpy; S='session_start.py'; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); j=os.path.expanduser('~/.claude/plugins/installed_plugins.json'); d=(json.load(open(j)) if (not r and os.path.exists(j)) else {}); r=r or next((sorted(v,key=lambda e:e.get('version',''))[-1].get('installPath') for k,v in d.get('plugins',{}).items() if k.startswith('psotobverse-utils')), None); g=glob.glob(os.path.expanduser('~/.claude/plugins/cache/*/psotobverse-utils/*')); r=r or (sorted(g)[-1] if g else None); p=(os.path.join(r,'hooks',S) if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
         ]
       }
     ],
     "UserPromptSubmit": [
       {
         "hooks": [
-          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','capture_signal.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+          { "type": "command", "command": "python -c \"import os,sys,json,glob,runpy; S='capture_signal.py'; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); j=os.path.expanduser('~/.claude/plugins/installed_plugins.json'); d=(json.load(open(j)) if (not r and os.path.exists(j)) else {}); r=r or next((sorted(v,key=lambda e:e.get('version',''))[-1].get('installPath') for k,v in d.get('plugins',{}).items() if k.startswith('psotobverse-utils')), None); g=glob.glob(os.path.expanduser('~/.claude/plugins/cache/*/psotobverse-utils/*')); r=r or (sorted(g)[-1] if g else None); p=(os.path.join(r,'hooks',S) if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
         ]
       }
     ],
     "SessionEnd": [
       {
         "hooks": [
-          { "type": "command", "command": "python -c \"import os,runpy,sys; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); p=(os.path.join(r,'hooks','session_end.py') if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
+          { "type": "command", "command": "python -c \"import os,sys,json,glob,runpy; S='session_end.py'; r=os.environ.get('CLAUDE_PLUGIN_ROOT'); j=os.path.expanduser('~/.claude/plugins/installed_plugins.json'); d=(json.load(open(j)) if (not r and os.path.exists(j)) else {}); r=r or next((sorted(v,key=lambda e:e.get('version',''))[-1].get('installPath') for k,v in d.get('plugins',{}).items() if k.startswith('psotobverse-utils')), None); g=glob.glob(os.path.expanduser('~/.claude/plugins/cache/*/psotobverse-utils/*')); r=r or (sorted(g)[-1] if g else None); p=(os.path.join(r,'hooks',S) if r else None); (runpy.run_path(p, run_name='__main__') if (p and os.path.exists(p)) else sys.exit(0))\"" }
         ]
       }
     ]

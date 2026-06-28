@@ -3,6 +3,33 @@
 All notable changes to **psotobverse-utils** are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.6.0] - 2026-06-28
+
+### Fixed
+- **Hooks now run in the Claude Desktop app** (`CLAUDE_CODE_ENTRYPOINT=claude-desktop`).
+  Empirically (datavidence investigation 2026-06-28): the desktop app *does* fire
+  plugin hooks, but it does **not** set `CLAUDE_PLUGIN_ROOT`. The previous
+  bootstrapper (read `CLAUDE_PLUGIN_ROOT`, else exit 0) therefore fired-but-no-op'd
+  there, so the meta-learner did nothing in desktop sessions. The bootstrapper is
+  now **self-discovering**: it tries `CLAUDE_PLUGIN_ROOT` first (terminal CLI — no
+  behaviour change), and if absent resolves the install dir at runtime from
+  `~/.claude/plugins/installed_plugins.json` (`installPath`), falling back to a glob
+  of `~/.claude/plugins/cache/*/psotobverse-utils/*` (newest). Still fail-open if
+  nothing resolves. Depends only on what every install creates (the cache +
+  `installed_plugins.json`), never on a source checkout — portable to any machine
+  or new user. Verified: emits identical output with `CLAUDE_PLUGIN_ROOT` set
+  (terminal) and unset (desktop), and a fresh desktop session now writes the
+  dirty-bit (`.claude/state/session.json`).
+
+### Known limitation
+- The desktop app runs hooks (side effects work: `UserPromptSubmit` signal capture,
+  `SessionEnd` handoff, the `SessionStart` dirty-bit) but does **not** inject
+  `SessionStart` `additionalContext` into the model (Anthropic feature request
+  anthropics/claude-code#47993). So **auto-resume-by-injection only works in the
+  terminal**. For desktop, have the project's `CLAUDE.md` instruct the agent to
+  self-read `SESSION_STATE.md` at session start (`CLAUDE.md` *is* injected in the
+  desktop app).
+
 ## [1.5.0] - 2026-06-28
 
 ### Added
