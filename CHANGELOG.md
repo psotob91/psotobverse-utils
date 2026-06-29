@@ -3,6 +3,16 @@
 All notable changes to **psotobverse-utils** are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.8.0] - 2026-06-29
+
+### Added
+- **`/rescue-manifest`** -- plans the migration of an arbitrary legacy / source repo into a
+  project's target layout: classifies every item KEEP / DROP / REGENERATE / KEEP-EXTERNAL and
+  applies four tests (regenerability; the archivist "would a data archivist include it in a
+  deposit?" test; a hard-coded-path audit; a size gate), then emits a decision-matrix manifest for
+  human sign-off. It PLANS the migration and moves nothing -- approved moves hand off to `/tidy`.
+  Generic (no project paths); references the shared robust core + anti-hallucination primitives.
+
 ## [1.7.0] - 2026-06-28
 
 ### Added
