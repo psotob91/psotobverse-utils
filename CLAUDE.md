@@ -41,6 +41,7 @@ skills/
   reconcile/SKILL.md     ← 6-phase audit/improve cycle (generator != auditor)
   deliberate/SKILL.md    ← design the approach before a risky change
   tidy/SKILL.md          ← propose relocations for loose files (never auto-move)
+  rescue-manifest/SKILL.md ← plan a repo migration as a decision matrix (KEEP/DROP/REGENERATE/KEEP-EXTERNAL); /tidy executes
   _shared/               ← NOT skills (no SKILL.md → loader ignores them)
     principles.md           the *why*  — 8 engineering principles
     robust-cycle.md         the *how*  — verify/checkpoint/meta-learn/stop primitives
