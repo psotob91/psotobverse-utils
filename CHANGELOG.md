@@ -3,6 +3,14 @@
 All notable changes to **psotobverse-utils** are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning: [SemVer](https://semver.org/).
 
+## [1.8.1] - 2026-06-29
+
+### Fixed
+- **`capture_signal.py` no longer captures harness-injected content as learning signals.**
+  Prompts that are `<task-notification>` (async-agent completion messages) or `<system-reminder>`
+  blocks are skipped early (mirrors the content filter in `coverage_sentinel.py`), so the
+  meta-learner queue collects only real user corrections / consensus signals. Stdin-tested.
+
 ## [1.8.0] - 2026-06-29
 
 ### Added

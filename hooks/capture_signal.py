@@ -32,6 +32,10 @@ def main() -> int:
     prompt = (inp.get("prompt") or "").strip()
     if not prompt:
         return 0
+    # Skip harness-injected content (async-agent task notifications, system reminders) --
+    # these are not user prompts and must not become learning signals.
+    if prompt.startswith("<task-notification>") or prompt.startswith("<system-reminder>"):
+        return 0
 
     correction = _compile(cfg.get("correction_patterns") or u.DEFAULT_CORRECTION)
     consensus = _compile(cfg.get("consensus_patterns") or u.DEFAULT_CONSENSUS)
